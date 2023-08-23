@@ -4,6 +4,7 @@ const adminController =require('../controllers/adminController/adminController')
 const validate = require('../helper/validate');
 const multer = require("multer");
 const upload = multer({storage:multer.memoryStorage()});
+const authenticateAdmin = require("../middleware/auth")
 
 //                                          ++++++++++++++++ADMIN+++++++++++++++++++++++                              
 
@@ -12,8 +13,9 @@ router.post('/createAdmin', validate.adminValidation, adminController.createAdmi
 
 //-------------------------------------------------------------- Admin login----------------------------------------------------------------//
 router.post('/login', adminController.adminLogin);
-router.post('/addArtist',upload.single("profile_pic"), adminController.addArtist);
-router.get('/getArtist/:id', adminController.getArtist);
+router.post('/addArtist',authenticateAdmin,upload.single("profile_pic"), adminController.addArtist); // add artist
+router.get('/getArtist/:id',authenticateAdmin, adminController.getArtist); // show artist by id
+router.get('/getAllArtist',authenticateAdmin, adminController.getAllArtist); // show all artist
 
 
 

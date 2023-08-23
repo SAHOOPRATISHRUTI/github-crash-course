@@ -10,7 +10,7 @@ const authenticateAdmin = (req, res, next) => {
 
   try {
     token = token.split(" ")[1];
-    const decoded = jwt.verify(token, 'your_secret_key'); // Replace 'your_secret_key' with your actual secret key
+    const decoded = jwt.verify(token, 'ADMIN'); // Replace 'your_secret_key' with your actual secret key
     console.log(decoded);
     // Add the decoded token data to the request object for further processing
     req.admin = decoded;
@@ -21,3 +21,5 @@ const authenticateAdmin = (req, res, next) => {
     return res.status(403).json({ error: 'Invalid token' });
   }
 };
+
+module.exports = authenticateAdmin;

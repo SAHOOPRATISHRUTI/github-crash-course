@@ -13,7 +13,7 @@ const bcrypt = require('bcrypt');
 
 exports.adminLogin = function (req, res) {
           const { email, password } = req.body;
-        
+          
           // Check if the user exists
           conn.query('SELECT * FROM admin WHERE email = ?', [email], (err, results) => {
             if (err) {
@@ -44,7 +44,7 @@ exports.adminLogin = function (req, res) {
         
               // Generate a JWT token
               const token = jwt.sign({ email, password }, 'ADMIN');
-        
+              
               res.status(200).json({ message: 'Login successful', token });
             });
           });
@@ -107,7 +107,7 @@ exports.createAdmin = function (req, res) {
 //............................................. ADD ARTIST ..........................................//
 
 exports.addArtist = (req,res)=>{
-  const { artist_name, email, password, instagram_id, spotify_id, contact_no } = req.body;
+  if(!emailVerification.test(email)) return res.status(400).json({message:"enter valid mail"})
   const addArtistQuery = "insert into artist (artist_name, email, password,profile_pic, instagram_id, spotify_id, contact_no) values (?,?,?,?,?,?,?)";
   const profile_pic= req.file.buffer.toString("base64");
   console.log(profile_pic)
@@ -116,12 +116,12 @@ exports.addArtist = (req,res)=>{
       console.error(error);
       return res.status(500).json({ error: 'Internal server error' });
     }
-    return res.status(200).json({ message:"inserted" });
+    return res.status(200).json({ status:"success" });
   })
 }
 
 
-//............................................. SHOW ARTIST ..........................................//
+//............................................. SHOW ARTIST by ID ..........................................//
 
 exports.getArtist = (req,res)=>{
   const { id } = req.params;
@@ -132,6 +132,19 @@ exports.getArtist = (req,res)=>{
       return res.status(500).json({ error: 'Internal server error' });
     }
     return res.status(200).json({ result });
+  })
+}
+
+exports.getAllArtist = (req,res)=>{
+  const getAllArtistQuery = "select * from artist";
+  conn.query(getAllArtistQuery,(error,result)=>{
+    if(error){
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+    console.log(result)
+    console.log("hit")
+    return res.status(200).json({ result:result });
   })
 }
 
