@@ -106,10 +106,15 @@ exports.createAdmin = function (req, res) {
 
 //............................................. ADD ARTIST ..........................................//
 
+exports.addArtistImage = (req,res)=>{
+  const profile_pic= req.file.path;
+  return res.status(200).json({profile_pic})
+}
+
 exports.addArtist = (req,res)=>{
-  if(!emailVerification.test(email)) return res.status(400).json({message:"enter valid mail"})
+  const {artist_name, email, password, profile_pic, instagram_id, spotify_id, contact_no}= req.body;
   const addArtistQuery = "insert into artist (artist_name, email, password,profile_pic, instagram_id, spotify_id, contact_no) values (?,?,?,?,?,?,?)";
-  const profile_pic= req.file.buffer.toString("base64");
+  
   console.log(profile_pic)
   conn.query(addArtistQuery,[artist_name, email, password, profile_pic, instagram_id, spotify_id, contact_no],(error,result)=>{
     if(error){
