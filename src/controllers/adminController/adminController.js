@@ -107,11 +107,11 @@ exports.createAdmin = function (req, res) {
 //............................................. ADD ARTIST ..........................................//
 
 exports.addArtist = (req,res)=>{
-  const { artist_name, email, password, instagram_id, spofify_id, contact_no } = req.body;
-  const addArtistQuery = "insert into artist (artist_name, email, password,profile_pic, instagram_id, spofify_id, contact_no) values (?,?,?,?,?,?,?)";
+  const { artist_name, email, password, instagram_id, spotify_id, contact_no } = req.body;
+  const addArtistQuery = "insert into artist (artist_name, email, password,profile_pic, instagram_id, spotify_id, contact_no) values (?,?,?,?,?,?,?)";
   const profile_pic= req.file.buffer.toString("base64");
   console.log(profile_pic)
-  conn.query(addArtistQuery,[artist_name, email, password, profile_pic, instagram_id, spofify_id, contact_no],(error,result)=>{
+  conn.query(addArtistQuery,[artist_name, email, password, profile_pic, instagram_id, spotify_id, contact_no],(error,result)=>{
     if(error){
       console.error(error);
       return res.status(500).json({ error: 'Internal server error' });
