@@ -116,7 +116,7 @@ exports.addArtist = (req,res)=>{
       console.error(error);
       return res.status(500).json({ error: 'Internal server error' });
     }
-    return res.status(200).json({ message:"inserted" });
+    return res.status(200).json({ status:'success'});
   })
 }
 
