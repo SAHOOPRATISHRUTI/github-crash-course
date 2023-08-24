@@ -154,7 +154,7 @@ exports.getAllArtist = (req,res)=>{
       console.error(error);
       return res.status(500).json({ error: 'failed to get list of artist' });
     }
-    return res.status(200).json({ result });
+    return res.status(200).json( result );
   })
 }
 
