@@ -11,7 +11,7 @@ const authenticateAdmin = (req, res, next) => {
   try {
     token = token.split(" ")[1];
     const decoded = jwt.verify(token, 'ADMIN'); // Replace 'your_secret_key' with your actual secret key
-    console.log(decoded);
+    // console.log(decoded);
     // Add the decoded token data to the request object for further processing
     req.admin = decoded;
 

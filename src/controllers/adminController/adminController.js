@@ -98,10 +98,11 @@ exports.createAdmin = function (req, res) {
               });
             });
           });
-        };
+};
 
 //............................................. ADD ARTIST ..........................................//
 
+<<<<<<< HEAD
 exports.addArtistImage = (req,res)=>{
   const profile_pic= req.file.path;
   return res.status(200).json({profile_pic})
@@ -114,10 +115,29 @@ exports.addArtist = (req,res)=>{
   console.log(profile_pic)
   conn.query(addArtistQuery,[artist_name, email, password, profile_pic, instagram_id, spotify_id, contact_no],(error,result)=>{
     if(error){
+=======
+exports.addArtist = async (req,res)=>{
+  const profile_pic= req.file.path;
+  const {artist_name, email, password,  instagram_id, spotify_id, contact_no}= req.body;
+  const hashedPassword = await bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
+      console.error('Error hashing password:', err);
+      return res.status(500).json({ error: 'failed to hash the password' });
+    }
+    return hashedPassword;
+  })
+
+  const existingArtist = "select email from artist where email = ?";
+  conn.query(existingArtist,[email],(error,result)=>{
+    if(error) {
+>>>>>>> 98aa25321aba9d912823651477408b34e0c83da3
       console.error(error);
       return res.status(500).json({error:"failed to get artist"})
     }
-    if(result[0].email){
+    if(!artist_name || !email || !password ||  !instagram_id || !spotify_id || !contact_no){
+      return res.status(400).json({error:"all fields required"})
+    }
+    if(result.length!==0){
       return res.status(400).json({error:"user already exist"})
     }
     const addArtistQuery = "insert into artist (artist_name, email, password,profile_pic, instagram_id, spotify_id, contact_no) values (?,?,?,?,?,?,?)";
@@ -139,7 +159,7 @@ exports.getArtist = (req,res)=>{
   conn.query(getArtistQuery,[id],(error,result)=>{
     if(error){
       console.error(error);
-      return res.status(500).json({ error: 'Failed to get Artist' });
+      return res.status(500).json({ error: `Failed to get Artist` });
     }
     return res.status(200).json({ result });
   })
@@ -149,11 +169,16 @@ exports.getArtist = (req,res)=>{
 
 exports.getAllArtist = (req,res)=>{
   const getAllArtistQuery = "select * from artist";
+  console.log("hit")
   conn.query(getAllArtistQuery,(error,result)=>{
     if(error){
       console.error(error);
       return res.status(500).json({ error: 'failed to get list of artist' });
     }
+<<<<<<< HEAD
+=======
+    console.log(result)
+>>>>>>> 98aa25321aba9d912823651477408b34e0c83da3
     return res.status(200).json( result );
   })
 }
