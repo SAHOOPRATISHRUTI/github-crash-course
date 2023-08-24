@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const bodyParser = require("body-parser");
 const adminRouter = require("./routes/adminRoutes");
 
@@ -17,7 +18,6 @@ app.use(
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
-
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 app.use("/admin", adminRouter);
