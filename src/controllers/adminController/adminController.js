@@ -1,15 +1,12 @@
 const conn =require('../../config/connection');
 let jwt = require('jsonwebtoken');
-const express = require('express');
-const app = express();
-
-
-app.use(express.json());
+// const express = require('express');
+// const app = express();
+// app.use(express.json());
 
 const bcrypt = require('bcrypt');
 
-//----------------------------------------------Login Admin By email and password---------------------------------------------------------------------//
-
+//----------------------------------------------Login Admin By email and password---------------------------------------------//
 
 exports.adminLogin = function (req, res) {
           const { email, password } = req.body;
@@ -50,7 +47,7 @@ exports.adminLogin = function (req, res) {
           });
         };
 
-        //----------------------------------------------Create Admin---------------------------------------------------------------------//
+//----------------------------------------------Create Admin-----------------------------------------------------//
 
 exports.createAdmin = function (req, res) {
           const { userName, email, password, mobileNumber } = req.body;
@@ -103,29 +100,36 @@ exports.createAdmin = function (req, res) {
           });
         };
 
-
 //............................................. ADD ARTIST ..........................................//
 
 exports.addArtistImage = (req,res)=>{
-  // const profile_pic= req.file.path;
+  const profile_pic= req.file.path;
   return res.status(200).json({profile_pic})
 }
 
 exports.addArtist = (req,res)=>{
-  const profile_pic = req.file.path;
-  const {artist_name, email, password, instagram_id, spotify_id, contact_no}= req.body;
+  const {artist_name, email, password, profile_pic, instagram_id, spotify_id, contact_no}= req.body;
   const addArtistQuery = "insert into artist (artist_name, email, password,profile_pic, instagram_id, spotify_id, contact_no) values (?,?,?,?,?,?,?)";
   
   console.log(profile_pic)
   conn.query(addArtistQuery,[artist_name, email, password, profile_pic, instagram_id, spotify_id, contact_no],(error,result)=>{
     if(error){
       console.error(error);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({error:"failed to get artist"})
     }
-    return res.status(200).json({status:'success'});
+    if(result[0].email){
+      return res.status(400).json({error:"user already exist"})
+    }
+    const addArtistQuery = "insert into artist (artist_name, email, password,profile_pic, instagram_id, spotify_id, contact_no) values (?,?,?,?,?,?,?)";
+    conn.query(addArtistQuery,[artist_name, email, password, profile_pic, instagram_id, spotify_id, contact_no],(error,result)=>{
+      if(error){
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to Add Artist' });
+      }
+      return res.status(200).json({ status:"success" });
+    })
   })
 }
-
 
 //............................................. SHOW ARTIST by ID ..........................................//
 
@@ -135,23 +139,50 @@ exports.getArtist = (req,res)=>{
   conn.query(getArtistQuery,[id],(error,result)=>{
     if(error){
       console.error(error);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Failed to get Artist' });
     }
     return res.status(200).json({ result });
   })
 }
+
+//............................................. SHOW ALL ARTIST .............................................//
 
 exports.getAllArtist = (req,res)=>{
   const getAllArtistQuery = "select * from artist";
   conn.query(getAllArtistQuery,(error,result)=>{
     if(error){
       console.error(error);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'failed to get list of artist' });
     }
-    console.log(result)
-    console.log("hit")
-    return res.status(200).json({ result:result });
+    return res.status(200).json({ result });
   })
 }
 
-        
+//............................................. CHANGE ARTIST STATUS .........................................//
+
+exports.changeArtistStatus = (req,res)=>{
+  const {id, status} = req.body;
+  const changeStatusQuery = "update artist set status = ? where id = ?";
+  conn.query(changeStatusQuery,[status,id],(error,result)=>{
+    if(error){
+      console.error(error);
+      return res.status(500).json({ error: 'Failed to update status' });
+    }
+    return res.status(200).json({ status:"success" });
+  })
+}
+
+//............................................. DELETE ARTIST  ..............................................//
+     
+exports.deleteArtist = (req,res)=>{
+  const {id} = req.params;
+  console.log(id)
+  const deleteArtistQuery = "delete from artist where id = ?";
+  conn.query(deleteArtistQuery,[id],(error,result)=>{
+    if(error){
+      console.error(error);
+      return res.status(500).json({ error: 'Failed To Delete Artist' });
+    }
+    return res.status(200).json({ status:"success" });
+  })
+}

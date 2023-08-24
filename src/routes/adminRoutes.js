@@ -12,10 +12,11 @@ router.post('/createAdmin', validate.adminValidation, adminController.createAdmi
 
 //-------------------------------------------------------------- Admin login----------------------------------------------------------------//
 router.post('/login', adminController.adminLogin);
-router.post('/addArtist',upload.single("profile_pic"), adminController.addArtist); // add artist
-router.post('/addImage', adminController.addArtistImage); // add artist
+router.post('/addArtist', adminController.addArtist); // add artist
+router.post('/addImage',upload.single("profile_pic"), adminController.addArtistImage); // add artist
 router.get('/getArtist/:id', adminController.getArtist); // show artist by id
 router.get('/getAllArtist', adminController.getAllArtist); // show all artist
+router.post('/deleteArtist/:id', adminController.deleteArtist); // delete artist by id
 
 
 
